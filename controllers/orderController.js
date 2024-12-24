@@ -10,57 +10,57 @@ const APIFeatures = require("../utils/apiFeatures");
 const AppError = require("../utils/appError");
 const fs = require("fs");
 
-const roundToNearestHalfHour = (date) => {
-  const minutes = date.getMinutes();
-  if (minutes < 15) {
-    date.setMinutes(0, 0, 0);
-  } else if (minutes < 45) {
-    date.setMinutes(30, 0, 0);
-  } else {
-    date.setMinutes(0, 0, 0);
-    date.setHours(date.getHours() + 1);
-  }
-  return date;
-};
+// const roundToNearestHalfHour = (date) => {
+//   const minutes = date.getMinutes();
+//   if (minutes < 15) {
+//     date.setMinutes(0, 0, 0);
+//   } else if (minutes < 45) {
+//     date.setMinutes(30, 0, 0);
+//   } else {
+//     date.setMinutes(0, 0, 0);
+//     date.setHours(date.getHours() + 1);
+//   }
+//   return date;
+// };
 
-const isWithinWorkingHours = (startTime, availableSlots) => {
-  const now = new Date();
-  const twoHoursFromNow = new Date(now.getTime() + 2 * 60 * 60 * 1000); // Current time + 2 hours
+// const isWithinWorkingHours = (startTime, availableSlots) => {
+//   const now = new Date();
+//   const twoHoursFromNow = new Date(now.getTime() + 2 * 60 * 60 * 1000); // Current time + 2 hours
 
-  if (startTime < twoHoursFromNow) {
-    return [false, null];
-  }
+//   if (startTime < twoHoursFromNow) {
+//     return [false, null];
+//   }
 
-  const dayOfWeek = startTime.getDay(); // Sunday - Saturday : 0 - 6
-  const dayName = [
-    "sunday",
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-  ][dayOfWeek];
+//   const dayOfWeek = startTime.getDay(); // Sunday - Saturday : 0 - 6
+//   const dayName = [
+//     "sunday",
+//     "monday",
+//     "tuesday",
+//     "wednesday",
+//     "thursday",
+//     "friday",
+//     "saturday",
+//   ][dayOfWeek];
 
-  const workingDay = availableSlots.find((slot) => slot.day === dayName);
-  console.log("time requested", startTime);
-  console.log("the whole day ", workingDay);
-  if (!workingDay) return false;
+//   const workingDay = availableSlots.find((slot) => slot.day === dayName);
+//   console.log("time requested", startTime);
+//   console.log("the whole day ", workingDay);
+//   if (!workingDay) return false;
 
-  const [startHour, startMinute] = workingDay.startTime.split(":").map(Number);
-  const [endHour, endMinute] = workingDay.endTime.split(":").map(Number);
+//   const [startHour, startMinute] = workingDay.startTime.split(":").map(Number);
+//   const [endHour, endMinute] = workingDay.endTime.split(":").map(Number);
 
-  const workingStartTime = new Date(startTime);
-  workingStartTime.setHours(startHour + 3, startMinute, 0, 0);
-  console.log("working start time ", workingStartTime);
-  const workingEndTime = new Date(startTime);
-  workingEndTime.setHours(endHour + 3, endMinute, 0, 0);
-  console.log("working end time ", workingEndTime);
+//   const workingStartTime = new Date(startTime);
+//   workingStartTime.setHours(startHour + 3, startMinute, 0, 0);
+//   console.log("working start time ", workingStartTime);
+//   const workingEndTime = new Date(startTime);
+//   workingEndTime.setHours(endHour + 3, endMinute, 0, 0);
+//   console.log("working end time ", workingEndTime);
 
-  const isWithinWorkingHours =
-    startTime >= workingStartTime && startTime < workingEndTime;
-  return [isWithinWorkingHours, workingDay];
-};
+//   const isWithinWorkingHours =
+//     startTime >= workingStartTime && startTime < workingEndTime;
+//   return [isWithinWorkingHours, workingDay];
+// };
 
 exports.getAll = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Order.find(), req.query)
@@ -92,6 +92,25 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.createOrderByDoctor = catchAsync(async (req, res, next) => {
+  const order = new Order({
+    user: req.body.userId,
+    doctor: req.user._id,
+    hospital: req.body.hospital,
+    priceInCents: req.body.priceInCents || 10000,
+    isPaid: true,
+    day: req.body.day,
+    startTime: req.body.startTime,
+    endTime: req.body.endTime,
+  });
+  await order.save();
+
+  res.status(201).json({
+    status: "success",
+    order,
+  });
+});
+
 exports.createOrder = catchAsync(async (req, res, next) => {
   const doctor = await Doctor.findById(req.body.doctorId);
 
@@ -102,93 +121,49 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     return next(new AppError("No doctor found with that ID", 404));
   }
 
-  let { startTime } = req.body;
-  startTime = roundToNearestHalfHour(new Date(startTime));
-  const parsedEndTime = new Date(startTime.getTime() + 30 * 60000); // 30 minutes after start time
+  let { slotId } = req.body;
+  // startTime = roundToNearestHalfHour(new Date(startTime));
+  // const parsedEndTime = new Date(startTime.getTime() + 30 * 60000); // 30 minutes after start time
 
-  const [isDoctorWorking, workingDay] = isWithinWorkingHours(
-    startTime,
-    doctor.availableSlots
-  );
-  console.log("true or false", isDoctorWorking, "the day", workingDay);
+  let slotMaxPatients;
+  let selectedSlot = null;
 
-  if (!isDoctorWorking) {
+  const slotAvailable = doctor.availableSlots.find((slot) => {
+    console.log(slot._id.toString(), "====", slotId.toString());
+    if (slot._id.toString() === slotId.toString()) {
+      if (slot.maxPatients > 0) {
+        selectedSlot = slot;
+        slotMaxPatients = slot.maxPatients;
+        slot.maxPatients -= 1; // Decrease maxPatients in the same loop
+      }
+    }
+  });
+
+  console.log(selectedSlot, "slot max patients", slotMaxPatients);
+
+  if (!selectedSlot || slotMaxPatients <= 0) {
     console.log("error");
     return next(
       new AppError(
-        "The requested time is outside of the doctor's working hours.",
+        "The requested time is outside of the doctor's working hours or Doctor can not recieve any more patients for now.",
         404
       )
     );
   }
 
-  // Check if the exact slot is already booked
-  const isSlotBooked = await Order.find({
-    doctor: doctor._id,
-    startTime: startTime,
-    endTime: parsedEndTime,
-  });
-
-  let isPaid;
-
-  for (let slot of isSlotBooked) {
-    if (slot.isPaid) {
-      isPaid = true;
-    }
-  }
-  // console.log("is paid? ", isSlotBooked.isPaid);
-  if (isPaid) {
-    // Find the nearest available slot
-    let nearestSlot = null;
-    let minDifference = Infinity;
-
-    // Iterate through the splitAvailableSlots to find the nearest available slot
-    const splitSlots = doctor.splitAvailableSlots;
-    for (let slot of splitSlots) {
-      const slotStartTime = new Date(slot.slotTime);
-      const slotEndTime = new Date(slot.endTime);
-
-      // Check if the slot is booked
-      const isSlotBooked = await Order.exists({
-        doctor: doctor._id,
-        startTime: slotStartTime,
-        endTime: slotEndTime,
-      });
-
-      console.log("nearest slot ", nearestSlot);
-      if (!isSlotBooked) {
-        const timeDifference = Math.abs(slotStartTime - startTime);
-        if (timeDifference < minDifference) {
-          nearestSlot = slot;
-          minDifference = timeDifference;
-        }
-      }
-    }
-    if (nearestSlot) {
-      const nearestSlotAdjustedTime = new Date(nearestSlot.slotTime);
-      nearestSlotAdjustedTime.setHours(nearestSlotAdjustedTime.getHours() - 3);
-      console.log("nearest time adjs", nearestSlotAdjustedTime);
-      return next(
-        new AppError(
-          `The requested time slot is not available. The nearest available slot starts at ${nearestSlotAdjustedTime}.`,
-          404
-        )
-      );
-    } else {
-      return next(new AppError(`No available slots`, 404));
-    }
-  }
-
   const order = new Order({
     user: req.user._id,
     doctor: doctor._id,
-    hospital: workingDay.hospital,
+    hospital: selectedSlot.hospital,
     priceInCents: doctor.priceOfConsultationInCents || 10000,
     isPaid: false,
-    startTime: startTime,
-    endTime: parsedEndTime,
+    day: selectedSlot.day,
+    startTime: selectedSlot.startTime,
+    endTime: selectedSlot.endTime,
   });
   await order.save();
+
+  await doctor.save({ validateBeforeSave: false });
 
   const paymentGateway = new PaymentGateway(
     paymobAPI,
@@ -203,6 +178,8 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     name: doctor.firstName,
     description: "Consultation",
   });
+
+  console.log(req.user);
 
   const paymentToken = await paymentGateway.createPaymentGateway({
     uEmail: req.user.email,

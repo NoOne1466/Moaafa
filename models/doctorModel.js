@@ -31,6 +31,7 @@ const availableSlotSchema = new mongoose.Schema({
     ref: "Hospital",
     required: [true, "Please provide the hospital ID"],
   },
+  maxPatients: { type: Number, required: true },
 });
 
 const doctorSchema = new mongoose.Schema(
@@ -71,10 +72,10 @@ const doctorSchema = new mongoose.Schema(
         message: "Passwords are not the same!",
       },
     },
-    medicalId: {
-      type: Number,
-      required: [true, "Please provide your medical id"],
-    },
+    // medicalId: {
+    //   type: Number,
+    //   required: [true, "Please provide your medical id"],
+    // },
     ratingsAverage: {
       type: Number,
       default: 4.0,
@@ -99,7 +100,6 @@ const doctorSchema = new mongoose.Schema(
       default: null,
     },
     speciality: String,
-
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetOtp: String,
@@ -118,12 +118,6 @@ const doctorSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Order",
-      },
-    ],
-    chatOrders: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "ChatOrder",
       },
     ],
     hospitals: [
@@ -147,58 +141,58 @@ doctorSchema.virtual("reviews", {
   localField: "_id",
 });
 
-doctorSchema.virtual("splitAvailableSlots").get(function () {
-  const doctor = this;
+// doctorSchema.virtual("splitAvailableSlots").get(function () {
+//   const doctor = this;
 
-  if (!doctor.availableSlots || !Array.isArray(doctor.availableSlots)) {
-    return [];
-  }
+//   if (!doctor.availableSlots || !Array.isArray(doctor.availableSlots)) {
+//     return [];
+//   }
 
-  const getNextDayOfWeek = (day) => {
-    const today = new Date();
-    const resultDate = new Date(today.getTime());
-    resultDate.setDate(today.getDate() + ((day + 7 - today.getDay()) % 7));
-    return resultDate;
-  };
+//   const getNextDayOfWeek = (day) => {
+//     const today = new Date();
+//     const resultDate = new Date(today.getTime());
+//     resultDate.setDate(today.getDate() + ((day + 7 - today.getDay()) % 7));
+//     return resultDate;
+//   };
 
-  const slots = [];
+//   const slots = [];
 
-  for (const slot of doctor.availableSlots) {
-    const dayOfWeek = [
-      "sunday",
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-    ].indexOf(slot.day);
-    const startDateTime = getNextDayOfWeek(dayOfWeek);
-    const [startHour, startMinute] = slot.startTime.split(":").map(Number);
-    const [endHour, endMinute] = slot.endTime.split(":").map(Number);
+//   for (const slot of doctor.availableSlots) {
+//     const dayOfWeek = [
+//       "sunday",
+//       "monday",
+//       "tuesday",
+//       "wednesday",
+//       "thursday",
+//       "friday",
+//       "saturday",
+//     ].indexOf(slot.day);
+//     const startDateTime = getNextDayOfWeek(dayOfWeek);
+//     const [startHour, startMinute] = slot.startTime.split(":").map(Number);
+//     const [endHour, endMinute] = slot.endTime.split(":").map(Number);
 
-    startDateTime.setHours(startHour + 3, startMinute, 0, 0);
-    const endDateTime = new Date(startDateTime);
-    endDateTime.setHours(endHour + 3, endMinute, 0, 0);
+//     startDateTime.setHours(startHour + 3, startMinute, 0, 0);
+//     const endDateTime = new Date(startDateTime);
+//     endDateTime.setHours(endHour + 3, endMinute, 0, 0);
 
-    let currentTime = new Date(startDateTime);
+//     let currentTime = new Date(startDateTime);
 
-    while (currentTime < endDateTime) {
-      const nextSlotTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
-      const slotEndTime =
-        nextSlotTime > endDateTime ? endDateTime : nextSlotTime;
-      slots.push({
-        hospital: slot.hospital,
-        slotTime: new Date(currentTime),
-        endTime: slotEndTime,
-      });
+//     while (currentTime < endDateTime) {
+//       const nextSlotTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
+//       const slotEndTime =
+//         nextSlotTime > endDateTime ? endDateTime : nextSlotTime;
+//       slots.push({
+//         hospital: slot.hospital,
+//         slotTime: new Date(currentTime),
+//         endTime: slotEndTime,
+//       });
 
-      currentTime = nextSlotTime;
-    }
-  }
+//       currentTime = nextSlotTime;
+//     }
+//   }
 
-  return slots;
-});
+//   return slots;
+// });
 
 doctorSchema.pre("save", async function (next) {
   // Only run this function if password was actually modified

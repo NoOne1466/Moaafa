@@ -19,11 +19,15 @@ const orderSchema = new mongoose.Schema({
   priceInCents: { type: Number, required: true },
   isPaid: { type: Boolean, required: true, default: false },
   startTime: {
-    type: Date,
+    type: String,
     required: true,
   },
   endTime: {
-    type: Date,
+    type: String,
+    required: true,
+  },
+  day: {
+    type: String,
     required: true,
   },
   createdAt: {

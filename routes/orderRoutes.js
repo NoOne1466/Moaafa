@@ -8,6 +8,9 @@ const router = express.Router();
 router.use(authController.protect);
 
 router.route("/").get(orderController.getAll).post(orderController.createOrder);
+router
+  .route("/bydoctor")
+  .post(authController.restrictTo("User"), orderController.createOrderByDoctor);
 router.route("/me").get(orderController.getMyOrders);
 router.route("/:id").post(orderController.refund);
 

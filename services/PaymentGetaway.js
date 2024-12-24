@@ -81,9 +81,10 @@ class PaymentGateway {
     //   "price",
     //   priceInCents
     // );
+    console.log(uEmail, uFirstName, uLastName, uPhoneNumber);
     if (!this.lastOrder || !this.token)
       throw new Error("Order is not set please call createOrder first");
-    if (!uEmail || !uFirstName || !uLastName || !uPhoneNumber)
+    if (!uEmail || !uFirstName || !uLastName)
       throw new Error(
         "uEmail, uFirstName, uLastName, uPhoneNumber are required"
       );
@@ -100,7 +101,7 @@ class PaymentGateway {
         email: uEmail,
         first_name: uFirstName,
         last_name: uLastName,
-        phone_number: uPhoneNumber,
+        phone_number: "01098238454",
         apartment: "NA",
         floor: "NA",
         street: "NA",

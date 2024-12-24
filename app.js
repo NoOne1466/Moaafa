@@ -31,7 +31,7 @@ const contactRoutes = require("./routes/contactRoutes");
 const googleAuthRoutes = require("./routes/googleAuthRoutes.js");
 const serviceRouter = require("./routes/serviceRoutes.js");
 const pillsRouter = require("./routes/PillScheduleRoutes.js");
-
+const bloodRouter = require("./models/bloodRequestModel.js");
 const webhookRouter = require("./routes/webhookRoutes.js");
 // const viewRouter = require("./routes/viewRoutes");
 
@@ -139,6 +139,7 @@ app.use("/api/v1/prescription", prescriptionRouter);
 app.use("/api/v1/contact", contactRoutes);
 app.use("/api/v1/service", serviceRouter);
 app.use("/api/v1/pills", pillsRouter);
+app.use("/api/v1/bloodRequest", bloodRouter);
 
 app.use("/api/v1", webhookRouter);
 

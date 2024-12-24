@@ -31,7 +31,7 @@ const contactRoutes = require("./routes/contactRoutes");
 const googleAuthRoutes = require("./routes/googleAuthRoutes.js");
 const serviceRouter = require("./routes/serviceRoutes.js");
 const pillsRouter = require("./routes/PillScheduleRoutes.js");
-const bloodRouter = require("./models/bloodRequestModel.js");
+const bloodRouter = require("./routes/bloodRequestRoutes.js");
 const webhookRouter = require("./routes/webhookRoutes.js");
 // const viewRouter = require("./routes/viewRoutes");
 

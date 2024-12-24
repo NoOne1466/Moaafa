@@ -8,6 +8,7 @@ exports.getAllRequests = factory.getAll(BloodRequest);
 exports.createBloodRequest = catchAsync(async (req, res, next) => {
   const { city, hospital, bloodType, notes } = req.body;
 
+  console.log(req.body);
   if (!city || !hospital || !bloodType) {
     return new AppError("City, hospital, and blood type are required.", 400);
   }

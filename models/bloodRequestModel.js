@@ -3,8 +3,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
-const mongoose = require("mongoose");
-
 const bloodRequestSchema = new mongoose.Schema({
   city: {
     type: String,

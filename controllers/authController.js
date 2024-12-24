@@ -11,30 +11,38 @@ const sendEmail = require("./../utils/email");
 // const { appendFile } = require("fs");
 
 const getUser = async (id, req) => {
-  let user;
-  // get the user/doctor and send the type of schema in req.body
-  user = await User.findById(id);
-  // console.log(user);
+  try {
+    // Execute all queries in parallel
+    const [user, doctor, admin] = await Promise.all([
+      User.findById(id),
+      Doctor.findById(id),
+      Admin.findById(id),
+    ]);
 
-  if (user) {
-    req.userModel = "User";
-    req.user = user;
-    return user;
-  }
-  user = await Doctor.findById(id);
-  // console.log(user);
-  if (user) {
-    req.userModel = "Doctor";
-    req.doctor = user;
-    return user;
-  }
+    // Check results and attach to req
+    if (user) {
+      req.userModel = "User";
+      req.user = user;
+      return user;
+    }
 
-  user = await Admin.findById(id);
-  // console.log(user);
-  if (user) {
-    req.userModel = "Admin";
-    req.admin = user;
-    return user;
+    if (doctor) {
+      req.userModel = "Doctor";
+      req.user = instructor;
+      return doctor;
+    }
+
+    if (admin) {
+      req.userModel = "Admin";
+      req.user = admin;
+      return admin;
+    }
+
+    // If no user is found
+    return null;
+  } catch (error) {
+    console.error("Error fetching user:", error.message);
+    throw new Error("Unable to fetch user");
   }
 };
 

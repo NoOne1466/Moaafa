@@ -11,13 +11,22 @@ const appointmentSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  hospital: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Hospital",
+    required: true,
+  },
+  day: {
+    type: String,
+    required: true,
+  },
 
   startTime: {
-    type: Date,
+    type: String,
     required: true,
   },
   endTime: {
-    type: Date,
+    type: String,
     required: true,
   },
   status: {

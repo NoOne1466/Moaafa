@@ -8,16 +8,15 @@ const router = express.Router();
 // router.use(authController.protect);
 
 router.use(authController.protect);
-router.route("/").get(appointmentController.getAllAppointments);
+router
+  .route("/")
+  .get(appointmentController.getAllAppointments)
+  .post(appointmentController.createAppointment);
 // .post(appointmentController.bookAppointment);
 
 router
   .route("/:id")
-  .patch(
-    authController.protect,
-    appointmentController.cancelAppointment,
-    orderController.refund
-  );
+  .patch(authController.protect, appointmentController.cancelAppointment);
 
 router
   .route("/getbyid/:id")

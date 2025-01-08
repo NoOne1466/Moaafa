@@ -97,7 +97,10 @@ exports.cancelAppointment = catchAsync(async (req, res, next) => {
 
   req.appointment = appointment;
 
-  next();
+  res.status(201).json({
+    status: "success",
+    appointment,
+  });
 });
 
 exports.getappointmentById = async (req, res, next) => {
@@ -173,3 +176,60 @@ exports.getCurrentUserAppointment = async (req, res, next) => {
     );
   }
 };
+
+exports.createAppointment = catchAsync(async (req, res, next) => {
+  const doctor = await Doctor.findById(req.body.doctorId);
+
+  console.log("doctor", doctor._id);
+  console.log("user", req.user);
+
+  if (!doctor) {
+    return next(new AppError("No doctor found with that ID", 404));
+  }
+
+  let { slotId } = req.body;
+  // startTime = roundToNearestHalfHour(new Date(startTime));
+  // const parsedEndTime = new Date(startTime.getTime() + 30 * 60000); // 30 minutes after start time
+
+  let slotMaxPatients;
+  let selectedSlot = null;
+
+  const slotAvailable = doctor.availableSlots.find((slot) => {
+    console.log(slot._id.toString(), "====", slotId.toString());
+    if (slot._id.toString() === slotId.toString()) {
+      if (slot.maxPatients > 0) {
+        selectedSlot = slot;
+        slotMaxPatients = slot.maxPatients;
+        slot.maxPatients -= 1; // Decrease maxPatients in the same loop
+      }
+    }
+  });
+
+  console.log(selectedSlot, "slot max patients", slotMaxPatients);
+
+  if (!selectedSlot || slotMaxPatients <= 0) {
+    console.log("error");
+    return next(
+      new AppError(
+        "The requested time is outside of the doctor's working hours or Doctor can not recieve any more patients for now.",
+        404
+      )
+    );
+  }
+  const appointment = new Appointment({
+    user: req.user._id,
+    doctor: doctor._id,
+    hospital: selectedSlot.hospital,
+    priceInCents: doctor.priceOfConsultationInCents || 10000,
+    isPaid: false,
+    day: selectedSlot.day,
+    startTime: selectedSlot.startTime,
+    endTime: selectedSlot.endTime,
+  });
+  await appointment.save();
+  await doctor.save({ validateBeforeSave: false });
+  res.status(201).json({
+    status: "success",
+    appointment,
+  });
+});

@@ -17,15 +17,14 @@ const prescriptionSchema = new mongoose.Schema({
   },
   symptoms: {
     type: String,
-    required: true,
   },
   medication: {
     type: String,
-    required: true,
   },
   instructions: {
     type: String,
   },
+  requests: [{ type: String }],
   createdAt: {
     type: Date,
     default: Date.now,

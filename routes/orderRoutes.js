@@ -5,13 +5,13 @@ const orderController = require("../controllers/orderController");
 const router = express.Router();
 
 // router.route("/webhook").post(orderController.webhook);
-router.use(authController.protect);
+// router.use(authController.protect);
 
-router.route("/").get(orderController.getAll).post(orderController.createOrder);
-router
-  .route("/bydoctor")
-  .post(authController.restrictTo("User"), orderController.createOrderByDoctor);
-router.route("/me").get(orderController.getMyOrders);
-router.route("/:id").post(orderController.refund);
+// router.route("/").get(orderController.getAll).post(orderController.createOrder);
+// router
+//   .route("/bydoctor")
+//   .post(authController.restrictTo("User"), orderController.createOrderByDoctor);
+// router.route("/me").get(orderController.getMyOrders);
+// router.route("/:id").post(orderController.refund);
 
 module.exports = router;

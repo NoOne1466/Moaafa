@@ -11,5 +11,6 @@ router
   .route("/")
   .get(PillController.getAllPillsForUser)
   .post(PillController.createPill);
+router.route("/:id").patch(PillController.SetActive);
 
 module.exports = router;

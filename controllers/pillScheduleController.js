@@ -42,5 +42,18 @@ exports.createPill = catchAsync(async (req, res, next) => {
 });
 
 exports.SetActive = catchAsync(async (req, res, next) => {
-  const pill = await Pill.findById({});
+  console.log(req.params.id);
+  const id = req.params.id;
+  const pill = await Pill.findById(id);
+  console.log(pill);
+  if (pill) {
+    pill.active = !pill.active; // Toggle the active field
+    await pill.save(); // Save the updated pill document
+    res.status(201).json({
+      status: "success",
+      pill,
+    });
+  } else {
+    return new AppError("No pill found", 404);
+  }
 });

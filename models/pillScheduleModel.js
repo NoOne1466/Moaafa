@@ -12,6 +12,7 @@ const pillScheduleSchema = new mongoose.Schema({
   times: [{ type: String, required: true }],
   duration: { type: String, required: true },
   nextAlarm: [{ type: Date }, { type: Boolean }],
+  active: Boolean,
   notes: { type: String },
 });
 

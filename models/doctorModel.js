@@ -86,6 +86,7 @@ const doctorSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    city: String,
     availableSlots: [availableSlotSchema],
     yearsOfExperience: Number,
     location: String,

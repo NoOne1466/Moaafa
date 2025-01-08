@@ -40,3 +40,7 @@ exports.createPill = catchAsync(async (req, res, next) => {
     data: { pillSchedule },
   });
 });
+
+exports.SetActive = catchAsync(async (req, res, next) => {
+  const pill = await Pill.findById({});
+});

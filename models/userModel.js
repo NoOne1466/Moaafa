@@ -77,6 +77,10 @@ const userSchema = new mongoose.Schema(
       enum: ["Single", "Married", "Divorced", "Widowed"],
       default: "Single",
     },
+    family: {
+      type: [mongoose.Schema.Types.ObjectId], // Array of ObjectIDs
+      ref: "User", // Reference to the 'User' collection
+    },
     spouseIds: {
       type: [mongoose.Schema.Types.ObjectId], // Array of ObjectIDs
       ref: "User", // Reference to the 'User' collection
@@ -97,6 +101,7 @@ const userSchema = new mongoose.Schema(
     },
     height: String,
     weight: String,
+    bloodSugar: String,
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetOtp: String,

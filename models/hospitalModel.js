@@ -41,6 +41,7 @@ const hospitalSchema = new mongoose.Schema(
       default: true,
       select: false,
     },
+    services: { type: [String] },
   },
   {
     toJSON: { virtuals: true },

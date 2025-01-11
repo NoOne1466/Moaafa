@@ -7,7 +7,10 @@ const hospitalSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please tell us your first name!"],
     },
-    category: { enum: ["hospitals", "clinics", "labs", "radiology"] },
+    category: {
+      enum: ["hospitals", "clinics", "labs", "radiology"],
+      required: true,
+    },
     email: {
       type: String,
       required: [true, "Please provide your email"],

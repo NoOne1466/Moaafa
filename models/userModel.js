@@ -99,8 +99,38 @@ const userSchema = new mongoose.Schema(
       enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
       default: null,
     },
-    height: String,
-    weight: String,
+    height: {
+      record: {
+        type: Number,
+        required: [true, "Please provide a height value"],
+      },
+      unit: {
+        type: String,
+        enum: ["cm", "ft"],
+        required: [true, "Please specify the height unit"],
+        default: "cm",
+      },
+      notes: {
+        type: String,
+        default: "",
+      },
+    },
+    weight: {
+      record: {
+        type: Number,
+        required: [true, "Please provide a weight value"],
+      },
+      unit: {
+        type: String,
+        enum: ["kg", "lb"],
+        required: [true, "Please specify the weight unit"],
+        default: "kg",
+      },
+      notes: {
+        type: String,
+        default: "",
+      },
+    },
     bloodSugar: String,
     passwordChangedAt: Date,
     passwordResetToken: String,

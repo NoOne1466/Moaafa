@@ -170,7 +170,7 @@ exports.getMe = (req, res, next) => {
   }
   if (req.userModel === "Doctor") {
     console.log(req.userModel);
-    req.params.id = req.doctor.id;
+    req.params.id = req.user.id;
     next();
   }
 };

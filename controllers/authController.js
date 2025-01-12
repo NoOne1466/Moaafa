@@ -92,6 +92,7 @@ exports.signup = (Model) =>
       speciality: req.body.speciality,
       yearsOfExperience: req.body.yearsOfExperience,
       location: req.body.location,
+      city: req.body.city,
       dateOfBirth: req.body.dateOfBirth,
     });
 

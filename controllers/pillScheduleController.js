@@ -17,7 +17,7 @@ exports.getAllPillsForUser = catchAsync(async (req, res, next) => {
 
 exports.createPill = catchAsync(async (req, res, next) => {
   const userId = req.user.id;
-  const { medicineName, dosage, frequency, duration, shape } = req.body;
+  const { medicineName, dosage, frequency, duration, shape, notes } = req.body;
 
   if (!medicineName || !dosage || !frequency || !duration || !shape) {
     return new AppError(
@@ -32,7 +32,9 @@ exports.createPill = catchAsync(async (req, res, next) => {
     frequency,
     duration,
     shape,
+    notes,
   });
+  // pillSchedule.save();
 
   // Respond with success
   res.status(201).json({

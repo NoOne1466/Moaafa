@@ -12,13 +12,10 @@ const pillScheduleSchema = new mongoose.Schema({
   times: [{ type: String, required: true }],
   duration: { type: String, required: true },
   nextAlarm: [{ type: Date }, { type: Boolean }],
-  active: Boolean,
+  active: { type: Boolean, default: false },
   notes: { type: String },
 });
 
-const PillScheduleSchema = mongoose.model(
-  "PillScheduleSchema",
-  pillScheduleSchema
-);
+const PillScheduleSchema = mongoose.model("PillSchedule", pillScheduleSchema);
 
 module.exports = PillScheduleSchema;

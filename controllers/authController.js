@@ -28,7 +28,7 @@ const getUser = async (id, req) => {
 
     if (doctor) {
       req.userModel = "Doctor";
-      req.user = instructor;
+      req.user = doctor;
       return doctor;
     }
 

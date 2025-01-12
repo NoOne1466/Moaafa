@@ -128,30 +128,22 @@ exports.getappointmentById = async (req, res, next) => {
   }
 };
 
-exports.getCurrentDoctorAppointment = async (req, res, next) => {
-  try {
-    // Find appointments associated with the doctor's ID
-    // console.log(req.doctor);
-    const appointments = await Appointment.find({ doctor: req.doctor.id });
+exports.getCurrentDoctorAppointment = catchAsync(async (req, res, next) => {
+  // Find appointments associated with the doctor's ID
+  console.log(req.user);
+  const appointments = await Appointment.find({ doctor: req.user.id });
 
-    // Check if appointments are found
-    if (!appointments || appointments.length === 0) {
-      return next(
-        new AppError("There are no appointments for the current doctor"),
-        404
-      );
-    }
-
-    // If appointments are found, send them in the response
-    res.status(200).json({ status: "success", data: { appointments } });
-  } catch (error) {
-    // Handle errors
+  // Check if appointments are found
+  if (!appointments || appointments.length === 0) {
     return next(
-      new AppError("There was an error getting your appointments"),
+      new AppError("There are no appointments for the current doctor"),
       404
     );
   }
-};
+
+  // If appointments are found, send them in the response
+  res.status(200).json({ status: "success", data: { appointments } });
+});
 
 exports.getCurrentUserAppointment = async (req, res, next) => {
   try {

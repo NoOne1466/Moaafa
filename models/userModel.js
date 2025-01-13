@@ -102,12 +102,13 @@ const userSchema = new mongoose.Schema(
     height: {
       record: {
         type: Number,
-        required: [true, "Please provide a height value"],
+        // required: [true, "Please provide a height value"],
+        default: null,
       },
       unit: {
         type: String,
         enum: ["cm", "ft"],
-        required: [true, "Please specify the height unit"],
+        // required: [true, "Please specify the height unit"],
         default: "cm",
       },
       notes: {
@@ -118,12 +119,13 @@ const userSchema = new mongoose.Schema(
     weight: {
       record: {
         type: Number,
-        required: [true, "Please provide a weight value"],
+        // required: [true, "Please provide a weight value"],
+        default: null,
       },
       unit: {
         type: String,
         enum: ["kg", "lb"],
-        required: [true, "Please specify the weight unit"],
+        // required: [true, "Please specify the weight unit"],
         default: "kg",
       },
       notes: {

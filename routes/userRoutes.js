@@ -43,16 +43,8 @@ router
 router
   .route("/:id")
   .get(userController.getUser)
-  .patch(
-    authController.restrictToSuperAdmin,
-    userController.createUser,
-    userController.updateUser
-  )
-  .delete(
-    authController.restrictToSuperAdmin,
-    userController.createUser,
-    userController.deleteUser
-  );
+  .patch(authController.restrictToSuperAdmin, userController.updateUser)
+  .delete(authController.restrictToSuperAdmin, userController.deleteUser);
 
 // Favorites routes
 router

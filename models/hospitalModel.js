@@ -23,10 +23,6 @@ const hospitalSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please provide the hospital location"],
     },
-    type: {
-      type: String,
-      enum: ["lab", "hospital"],
-    },
     ratingsAverage: {
       type: Number,
       default: 4.0,

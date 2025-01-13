@@ -285,8 +285,9 @@ exports.restrictToSuperAdmin = (req, res, next) => {
   // console.log(req.user);
   // console.log(req.doctor);
   // console.log(req.admin);
+  console.log(req.user);
 
-  if (req.doctor || req.user || req.admin.role !== "super-admin") {
+  if (req.user.role !== "super-admin") {
     return next(
       new AppError("You do not have permission to perform this action", 403)
     );

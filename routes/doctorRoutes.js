@@ -9,6 +9,14 @@ const factory = require("./../controllers/handlerFactory");
 
 const router = express.Router();
 
+router.get(
+  "/me",
+  authController.protect,
+  authController.restrictTo("User"),
+  doctorController.getMe,
+  doctorController.getDoctor
+);
+
 router.route("/").get(
   // authController.protect,
   // authController.restrictTo("User"),
@@ -26,13 +34,6 @@ router.patch("/resetPassword", authController.resetPassword(Doctor));
 //   .post(reviewDoctorsController.createNewReview);
 
 router.use(authController.protect);
-router.get(
-  "/me",
-  authController.protect,
-  authController.restrictTo("User"),
-  doctorController.getMe,
-  doctorController.getDoctor
-);
 
 router.patch("/updateMyPassword", authController.updatePassword(Doctor));
 router.patch("/updateMe", factory.uploadPhoto, doctorController.updateMe);

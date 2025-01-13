@@ -96,28 +96,11 @@ exports.createOne = (Model) =>
 exports.getOne = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
     let query = Model.findById(req.params.id);
-
     if (popOptions) query = query.populate(popOptions);
 
     let doc = await query;
 
     console.log(Model.modelName);
-    let newSplit = [];
-    if (Model.modelName == "Doctor") {
-      console.log(doc.splitAvailableSlots);
-      for (const slot of doc.splitAvailableSlots) {
-        const temp = await Order.findOne({
-          isPaid: true,
-          startTime: slot.slotTime,
-          endTime: slot.endTime,
-        });
-        console.log("slot", temp);
-        if (!temp) {
-          console.log("no temp pushing");
-          newSplit.push(slot);
-        }
-      }
-    }
     // console.log("available ", newSplit);
     if (!doc) {
       return next(new AppError("No document found with that ID", 404));
@@ -127,7 +110,6 @@ exports.getOne = (Model, popOptions) =>
       status: "success",
       data: {
         data: doc,
-        onlyFreeSlots: newSplit,
       },
     });
   });
@@ -136,6 +118,7 @@ exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
     // To allow for nested GET reviews on doc or user (hack)
 
+    console.log(req.query);
     let filter = {};
     // if (req.params.doctorId) filter = { doctor: req.params.doctorId };
     // if (req.params.userId) filter = { user: req.params.userId };

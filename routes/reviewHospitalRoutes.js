@@ -16,6 +16,9 @@ router
   );
 
 router
+  .route("/hospitalReview/:id")
+  .get(reviewHospitalController.getAllReviewsForHospital);
+router
   .route("/:id")
   .get(reviewHospitalController.getReview)
   .patch(reviewHospitalController.updateReview)

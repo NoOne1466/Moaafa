@@ -63,3 +63,32 @@ exports.deleteSlot = catchAsync(async (req, res, next) => {
 
   res.status(200).json({ message: "Slot deleted successfully", doctor });
 });
+
+exports.searchDoctorsByHospital = catchAsync(async (req, res, next) => {
+  const hospitalId = req.params.hospitalId;
+
+  // Validate the hospital ID
+  if (!hospitalId) {
+    return next(new AppError("Hospital ID is required."), 404);
+  }
+
+  // Search doctors with available slots in the specified hospital
+  const doctors = await Doctor.find({
+    "availableSlots.hospital": new mongoose.Types.ObjectId(hospitalId),
+  });
+
+  // If no doctors found, return an empty array or a suitable message
+  if (doctors.length === 0) {
+    return next(
+      new AppError("No doctors found with available slots in this hospital."),
+      404
+    );
+  }
+
+  // Return the list of doctors
+  return res.status(200).json({
+    status: "success",
+    length: doctors.length,
+    doctors,
+  });
+});

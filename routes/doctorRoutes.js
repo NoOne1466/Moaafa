@@ -10,6 +10,11 @@ const factory = require("./../controllers/handlerFactory");
 const router = express.Router();
 
 router.get(
+  "/searchByHospital/:hospitalId",
+  doctorController.searchDoctorsByHospital
+);
+
+router.get(
   "/me",
   authController.protect,
   authController.restrictTo("User"),

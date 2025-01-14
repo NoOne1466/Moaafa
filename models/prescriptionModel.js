@@ -13,25 +13,29 @@ const prescriptionSchema = new mongoose.Schema({
   },
   diagnosis: {
     type: String,
-    required: true,
+    default: null,
   },
   symptoms: {
     type: String,
+    default: null,
   },
   medication: {
     type: String,
+    default: null,
   },
   instructions: {
     type: String,
+    default: null,
   },
-  requests: [{ type: String }],
+  requests: [{ type: String, default: null }],
   createdAt: {
     type: Date,
     default: Date.now,
   },
-  type: Number,
+  type: { Number },
   image: {
     type: [String],
+    default: null,
   },
 });
 

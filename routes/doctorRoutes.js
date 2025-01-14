@@ -35,6 +35,10 @@ router.patch("/resetPassword", authController.resetPassword(Doctor));
 
 router.use(authController.protect);
 
+router.put("/slots/:slotId", doctorController.updateSlot);
+
+router.delete("/slots/:slotId", doctorController.deleteSlot);
+
 router.patch("/updateMyPassword", authController.updatePassword(Doctor));
 router.patch("/updateMe", factory.uploadPhoto, doctorController.updateMe);
 router.delete("/deleteMe", doctorController.deleteMe);

@@ -2,6 +2,8 @@ const catchAsync = require("./../utils/catchAsync");
 const APIFeatures = require("./../utils/apiFeatures");
 const Doctor = require("./../models/doctorModel");
 const factory = require("./handlerFactory.js");
+const AppError = require("../utils/appError.js");
+const mongoose = require("mongoose");
 
 exports.getDoctor = factory.getOne(Doctor);
 exports.getAllDoctors = factory.getAll(Doctor);
@@ -18,3 +20,46 @@ exports.deleteMe = factory.deleteMe(Doctor);
 exports.getMe = factory.getMe;
 
 exports.homePage = factory.homePage;
+
+exports.updateSlot = catchAsync(async (req, res, next) => {
+  const { slotId } = req.params;
+  const doctorId = req.user.id;
+  const { day, startTime, endTime, hospital, maxPatients } = req.body;
+
+  const doctor = await Doctor.findOneAndUpdate(
+    { _id: doctorId, "availableSlots._id": slotId },
+    {
+      $set: {
+        "availableSlots.$.day": day,
+        "availableSlots.$.startTime": startTime,
+        "availableSlots.$.endTime": endTime,
+        "availableSlots.$.hospital": new mongoose.Types.ObjectId(hospital), // Use 'new' here
+        "availableSlots.$.maxPatients": maxPatients,
+      },
+    },
+    { new: true, runValidators: true }
+  );
+
+  if (!doctor) {
+    return next(new AppError("Doctor not found or slot not found", 404));
+  }
+
+  res.status(200).json({ message: "Slot updated successfully", doctor });
+});
+
+exports.deleteSlot = catchAsync(async (req, res, next) => {
+  const { slotId } = req.params;
+  const doctorId = req.user.id;
+
+  const doctor = await Doctor.findByIdAndUpdate(
+    doctorId,
+    { $pull: { availableSlots: { _id: slotId } } },
+    { new: true }
+  );
+
+  if (!doctor) {
+    return next(new AppError("Doctor not found or slot not found", 404));
+  }
+
+  res.status(200).json({ message: "Slot deleted successfully", doctor });
+});

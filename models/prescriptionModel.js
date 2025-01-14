@@ -32,7 +32,6 @@ const prescriptionSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  type: { Number },
   image: {
     type: [String],
     default: null,

@@ -12,8 +12,8 @@ exports.addPrescription = catchAsync(async (req, res, next) => {
   console.log("x");
   const { userId, medication, dosage, instructions, diagnosis, symptoms } =
     req.body;
-  if (!userId || !medication || !dosage || !diagnosis || !symptoms) {
-    throw new AppError("Your input data is corrupted", 400);
+  if (!userId) {
+    throw new AppError("You need to add a user", 400);
   }
 
   // console.log(req.doctor.id);
@@ -39,6 +39,7 @@ exports.addPrescription = catchAsync(async (req, res, next) => {
     medication,
     dosage,
     instructions,
+    requests,
   });
 
   await prescription.save();

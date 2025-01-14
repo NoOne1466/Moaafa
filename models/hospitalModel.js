@@ -42,6 +42,10 @@ const hospitalSchema = new mongoose.Schema(
       default: true,
       select: false,
     },
+    startTime: { type: String, default: null },
+    endTime: { type: String, default: null },
+    startDay: { type: String, default: null },
+    endDay: { type: String, default: null },
     services: { type: [String] },
   },
   {

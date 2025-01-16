@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "img/default.jpg",
     },
-    dateOfBirth: Date,
+    dateOfBirth: { type: Date, default: null },
     password: {
       type: String,
       required: [true, "Please provide a password"],
@@ -133,6 +133,9 @@ const userSchema = new mongoose.Schema(
         default: "",
       },
     },
+    allergies: { type: [String], default: null },
+    intolerance: { type: [String], default: null },
+
     bloodSugar: String,
     passwordChangedAt: Date,
     passwordResetToken: String,

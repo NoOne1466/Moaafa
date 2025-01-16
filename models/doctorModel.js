@@ -101,6 +101,7 @@ const doctorSchema = new mongoose.Schema(
       enum: ["male", "female"],
       default: null,
     },
+    bio: { type: String, default: null },
     speciality: String,
     passwordChangedAt: Date,
     passwordResetToken: String,

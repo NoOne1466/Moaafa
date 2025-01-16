@@ -51,6 +51,7 @@ exports.addPrescription = catchAsync(async (req, res, next) => {
     },
   });
 });
+
 exports.getAllPrescriptionForCurrentPerson = catchAsync(
   async (req, res, next) => {
     let prescriptions;
@@ -67,15 +68,14 @@ exports.getAllPrescriptionForCurrentPerson = catchAsync(
       console.log(prescriptions);
     }
 
-    // console.log(chat);
-    if (!prescriptions) {
-      return next(
-        new AppError(
-          "There are not chats for the current logged in person.",
-          400
-        )
-      );
-    }
+    // if (!prescriptions) {
+    //   return next(
+    //     new AppError(
+    //       "There are not chats for the current logged in person.",
+    //       400
+    //     )
+    //   );
+    // }
 
     res.status(200).json({ status: "success", data: { prescriptions } });
   }

@@ -186,7 +186,10 @@ exports.updateMe = (Model) =>
       "speciality",
       "yearsOfExperience",
       "bio",
-      "hospitals"
+      "hospitals",
+      "bloodType",
+      "height",
+      "weight"
     );
     if (req.file) filteredBody.photo = `img/${req.file.filename}`;
 

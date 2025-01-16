@@ -78,12 +78,12 @@ exports.searchDoctorsByHospital = catchAsync(async (req, res, next) => {
   });
 
   // If no doctors found, return an empty array or a suitable message
-  if (doctors.length === 0) {
-    return next(
-      new AppError("No doctors found with available slots in this hospital."),
-      404
-    );
-  }
+  // if (doctors.length === 0) {
+  //   return next(
+  //     new AppError("No doctors found with available slots in this hospital."),
+  //     404
+  //   );
+  // }
 
   // Return the list of doctors
   return res.status(200).json({

@@ -9,9 +9,15 @@ const AppError = require("../utils/appError");
 exports.getPrescriptionById = factory.getOne(Prescription);
 exports.getAllPrescription = factory.getAll(Prescription);
 exports.addPrescription = catchAsync(async (req, res, next) => {
-  console.log("x");
-  const { userId, medication, dosage, instructions, diagnosis, symptoms } =
-    req.body;
+  const {
+    userId,
+    medication,
+    dosage,
+    instructions,
+    diagnosis,
+    symptoms,
+    requests,
+  } = req.body;
   if (!userId) {
     throw new AppError("You need to add a user", 400);
   }
@@ -23,7 +29,7 @@ exports.addPrescription = catchAsync(async (req, res, next) => {
   // console.log(user.id);
 
   const appointment = await Appointment.findOne({
-    doctor: req.doctor.id,
+    doctor: req.user.id,
     user: user.id,
   });
   if (!appointment) {
@@ -33,7 +39,7 @@ exports.addPrescription = catchAsync(async (req, res, next) => {
   // console.log(appointment);
   const prescription = new Prescription({
     user: userId,
-    doctor: req.doctor.id,
+    doctor: req.user.id,
     diagnosis,
     symptoms,
     medication,
@@ -42,6 +48,7 @@ exports.addPrescription = catchAsync(async (req, res, next) => {
     requests,
   });
 
+  console.log("x");
   await prescription.save();
 
   res.status(201).json({

@@ -19,7 +19,6 @@ const bloodRequestSchema = new mongoose.Schema({
   },
   notes: {
     type: String,
-    required: false,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
